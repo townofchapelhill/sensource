@@ -70,17 +70,35 @@ def parse_data(raw_data):
 
     headers = ["Datetime", "Total Occupancy", "Children's Room Occupancy", "Lobby Occupancy"]
     now = datetime.datetime.now()
-    prev_build_pop = 0
-    prev_chld_pop = 0
-    prev_lob_pop = 0
 
-    with open("sensource.csv", "r") as sensource:
-        row_count = sum(1 for row in sensource)
-        
-        for line in sensource:
-            prev_build_pop = int(line[1])
-            prev_chld_pop = int(line[2])
-            prev_lob_pop = int(line[3])
+
+    with open("sensource.csv", "r", newline='') as file:
+        row_count = sum(1 for row in file)
+        time = str(datetime.datetime.now().time())
+        weekno = datetime.datetime.today().weekday()
+        reader = csv.reader(file, delimiter=",")
+        file.seek(0)
+        has_header = next(reader, None)
+
+        if has_header:
+                next(reader)
+
+        if weekno <= 4 and time[0:2] == "09":
+            prev_build_pop = 0
+            prev_chld_pop = 0
+            prev_lob_pop = 0
+
+        if weekno >= 5 and time[0:2] == "10":
+            prev_build_pop = 0
+            prev_chld_pop = 0
+            prev_lob_pop = 0
+
+        else:
+            for row in reader:
+                prev_build_pop = int(row[1])
+                prev_chld_pop = int(row[2])
+                prev_lob_pop = int(row[3])
+
     
     with open("sensource.csv", "a") as sensource:
 
@@ -93,14 +111,15 @@ def parse_data(raw_data):
             new_chld_pop = childrens_room_total + prev_chld_pop
             new_lob_pop = security_gate_total + prev_lob_pop
 
-            sensource.write(str(now) + ",")
-            sensource.write(str(new_build_pop) + ",")
-            sensource.write(str(new_chld_pop) + ",")
+            sensource.write(str(now) + ", ")
+            sensource.write(str(new_build_pop) + ", ")
+            sensource.write(str(new_chld_pop) + ", ")
             sensource.write(str(new_lob_pop) + "\n")
+
         else:
-            sensource.write(str(now) + ",")
-            sensource.write(str(current_building_pop) + ",")
-            sensource.write(str(childrens_room_total) + ",")
+            sensource.write(str(now) + ", ")
+            sensource.write(str(current_building_pop) + ", ")
+            sensource.write(str(childrens_room_total) + ", ")
             sensource.write(str(security_gate_total) + "\n")
 
 
