@@ -2,9 +2,7 @@
 import secrets
 import requests
 import json
-import csv
 import os
-import jsonpickle
 import datetime
 import sys
 
@@ -56,14 +54,12 @@ def get_data():
 # Function performs the data transformation
 def parse_data(raw_data):
     # Lists for organizing & parsing data
-    gate_names = []
     total_building_entries = []
     total_building_exits = []
     childrens_room_entries = []
     childrens_room_exits = []
     security_gate_entries = []
     security_gate_exits = []
-    raw_numbers = []
     loop_data = raw_data['results']
     # Initialize new "Data" object
     new_data = Data()
@@ -188,5 +184,5 @@ def check_open():
     else:
         sys.exit()
 
-# Begins script        
+# Begins script
 check_open()
